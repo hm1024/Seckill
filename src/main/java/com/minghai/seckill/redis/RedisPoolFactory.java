@@ -3,7 +3,6 @@ package com.minghai.seckill.redis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -12,8 +11,6 @@ import redis.clients.jedis.JedisPoolConfig;
  * @description
  * @date 2019/12/5
  */
-@Service
-@Slf4j
 public class RedisPoolFactory {
 
     @Autowired
