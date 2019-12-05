@@ -1,6 +1,7 @@
 package com.minghai.seckill.controller;
 
 import com.minghai.seckill.domain.User;
+import com.minghai.seckill.redis.RedisService;
 import com.minghai.seckill.result.CodeMsg;
 import com.minghai.seckill.result.ResponseVO;
 import com.minghai.seckill.service.UserService;
@@ -18,11 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Controller
 @RequestMapping("/test/")
-public class DemoController {
+public class SampleController {
 
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private RedisService redisService;
 
     @RequestMapping("success")
     @ResponseBody
@@ -56,6 +60,20 @@ public class DemoController {
         boolean tx = userService.tx();
 
         return ResponseVO.success(tx);
+    }
+
+    @RequestMapping("/redis/get")
+    @ResponseBody
+    public ResponseVO<Long> redisGet(){
+        Long v1 = redisService.get("k1",Long.class);
+        return ResponseVO.success(v1);
+    }
+    @RequestMapping("/redis/set")
+    @ResponseBody
+    public ResponseVO<String> redisSet(){
+        boolean b = redisService.set("k2", "minghai");
+        String k2 = redisService.get("k2", String.class);
+        return ResponseVO.success(k2);
     }
 
 }
