@@ -18,20 +18,36 @@ public class RedisService {
 
     @Autowired
     private JedisPool jedisPool;
-
-    public <T> T get(String key, Class<T> clazz){
+    
+    /**
+     * @Author minghai
+     * @Description 获取单个对象
+     * @Date 2019/12/12 11:41 
+     * @Param [prefix, key, clazz]
+     * @return T
+     */
+    public <T> T get(KeyPrefix prefix,String key, Class<T> clazz){
         Jedis jedis = null;
         try{
             jedis = jedisPool.getResource();
-           String str =  jedis.get(key);
+            // 生成正真的key
+            String realKey = prefix.getPrefix() + key;
+            String str =  jedis.get(realKey);
 
-           T t = stringToBean(str,clazz);
+            T t = stringToBean(str,clazz);
            return t;
         }finally {
             returnToPool(jedis);
         }
     }
-    public <T> boolean set(String key, T value){
+    /**
+     * @Author minghai
+     * @Description 设置对象
+     * @Date 2019/12/12 11:42 
+     * @Param [prefix, key, value]
+     * @return boolean
+     */
+    public <T> boolean set(KeyPrefix prefix, String key, T value){
         Jedis jedis = null;
         try{
            jedis = jedisPool.getResource();
@@ -39,8 +55,75 @@ public class RedisService {
            if(str == null || str.length() <= 0){
                return false;
            }
-           jedis.set(key,str);
+            // 生成正真的key
+            String realKey = prefix.getPrefix() + key;
+
+           int seconds = prefix.expireSeconds();
+           if(seconds <= 0){
+               jedis.set(realKey,str);
+           }else{
+               jedis.setex(realKey,seconds,str);
+           }
+
+
            return true;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * @Author minghai
+     * @Description 判断是否存在
+     * @Date 2019/12/12 11:43
+     * @Param [prefix, key]
+     * @return boolean
+     */
+    public <T> boolean exists(KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try{
+           jedis = jedisPool.getResource();
+            // 生成正真的key
+            String realKey = prefix.getPrefix() + key;
+            return jedis.exists(realKey);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * @Author minghai
+     * @Description 增加值
+     * @Date 2019/12/12 11:44
+     * @Param [prefix, key]
+     * @return java.lang.Long
+     */
+    public <T> Long incr(KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try{
+           jedis = jedisPool.getResource();
+            // 生成正真的key
+            String realKey = prefix.getPrefix() + key;
+            return jedis.incr(realKey);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * @Author minghai
+     * @Description 减少值
+     * @Date 2019/12/12 11:44
+     * @Param [prefix, key]
+     * @return java.lang.Long
+     */
+    public <T> Long decr(KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try{
+           jedis = jedisPool.getResource();
+            // 生成正真的key
+            String realKey = prefix.getPrefix() + key;
+            return jedis.decr(realKey);
         }finally {
             returnToPool(jedis);
         }
@@ -83,7 +166,4 @@ public class RedisService {
             jedis.close();
         }
     }
-
-
-
 }

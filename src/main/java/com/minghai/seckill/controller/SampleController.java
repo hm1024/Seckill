@@ -2,6 +2,7 @@ package com.minghai.seckill.controller;
 
 import com.minghai.seckill.domain.User;
 import com.minghai.seckill.redis.RedisService;
+import com.minghai.seckill.redis.UserKey;
 import com.minghai.seckill.result.CodeMsg;
 import com.minghai.seckill.result.ResponseVO;
 import com.minghai.seckill.service.UserService;
@@ -64,16 +65,18 @@ public class SampleController {
 
     @RequestMapping("/redis/get")
     @ResponseBody
-    public ResponseVO<Long> redisGet(){
-        Long v1 = redisService.get("k1",Long.class);
+    public ResponseVO<User> redisGet(){
+        User v1 = redisService.get(UserKey.getById,""+1,User.class);
         return ResponseVO.success(v1);
     }
     @RequestMapping("/redis/set")
     @ResponseBody
-    public ResponseVO<String> redisSet(){
-        boolean b = redisService.set("k2", "minghai");
-        String k2 = redisService.get("k2", String.class);
-        return ResponseVO.success(k2);
+    public ResponseVO<Boolean> redisSet(){
+        User user = new User();
+        user.setId(1);
+        user.setName("minghai");
+        boolean set = redisService.set(UserKey.getById, "" + 1, user);
+        return ResponseVO.success(true);
     }
 
 }
