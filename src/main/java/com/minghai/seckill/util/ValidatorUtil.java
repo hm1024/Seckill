@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @description
  * @date 2019/12/12
  */
-public class ValidateUtil {
+public class ValidatorUtil {
 
 
     private static final Pattern mobile_pattern = Pattern.compile("1\\d{10}");
