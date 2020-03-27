@@ -1,9 +1,11 @@
 package com.minghai.seckill.redis;
 
 import com.alibaba.fastjson.JSON;
+import com.minghai.seckill.domain.SeckillUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -166,4 +168,5 @@ public class RedisService {
             jedis.close();
         }
     }
+
 }
