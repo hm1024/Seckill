@@ -29,6 +29,9 @@ public class CodeMsg {
     // 商品模块 5003xx
     // 订单模块 5004xx
     // 秒杀模块 5005xx
+    public static CodeMsg SECKILL_OVER = new CodeMsg(500500,"商品已经秒杀完毕");
+    public static CodeMsg REPEATE_SECKILL = new CodeMsg(500500,"不能重复秒杀");
+
     private CodeMsg(int code, String msg) {
         this.code = code;
         this.msg = msg;
